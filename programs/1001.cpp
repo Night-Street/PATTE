@@ -24,22 +24,23 @@ int getFtr(int n) {
     else return father[n] = getFtr(father[n]);
 }
 
-int unite(int a, int b) {
+void unite(int a, int b) {
     int fa = getFtr(a);
     int fb = getFtr(b);
     if (fa != fb) {
         father[fb] = fa;
     }
 }
-
+//存储图中的边
 vector<Edge> edges;
+//存储割点
 set<int> cut;
 
 /**
- * True means existing cuts
- * @param cur
- * @param father
- * @param root
+ * 通过dfs树求图中的割点
+ * @param cur dfs树遍历过程中的当前节点
+ * @param father 顶点cur在dfs树上的父节点
+ * @param root dfs树的根节点
  * @return
  */
 void dfs(int cur, int father, int root) {
@@ -66,7 +67,11 @@ void dfs(int cur, int father, int root) {
         }
     }
 }
-
+/**
+ * 通过kruskal算法构建最小生成树，并求出修路所需费用
+ * @param except 被占领的城市，计算最小生成树时跳过与此点相连的边
+ * @return 修路所需费用
+ */
 int MST(int except) {
     int ckpt[maxn];
     for (int i = 1; i <= N; i++) {
@@ -91,17 +96,6 @@ int MST(int except) {
     return ans;
 }
 
-bool vis[maxn] = {0};
-
-void dfs(int start, int except) {
-    vis[start] = 1;
-    for (NextVertex v: v_graph[start]) {
-        if (v.ed != except && !vis[v.ed] && v.status == 1) {
-            dfs(v.ed, except);
-        }
-    }
-}
-
 int main() {
     cin >> N >> M;
 
@@ -123,19 +117,21 @@ int main() {
     sort(edges.begin(), edges.end(), [&](Edge a, Edge b) {
         return a.status > b.status || a.status == b.status && a.cost < b.cost;
     });
-    if (N == 500)goto no_cut;
+//    先求出图中的割点
     dfs(1, 1, 1);
     if (cut.size()) {
+//        如果存在割点，直接输出所有割点
         bool f = 0;
         for (int cut_v: cut) {
             printf("%s%d", f ? " " : "", cut_v);
             f = 1;
         }
     } else {
-        no_cut:
         int max_cost = -1;
+//        存储最应受到关注城市的顶点编号
         vector<int> v_set;
         for (int i = 1; i <= N; i++) {
+//            遍历图中每个点，构建一棵最小生成树，计算出修路所需费用。记录下费用最多的点。
             int cost = MST(i);
             if (cost == 0)continue;
             if (cost > max_cost) {
@@ -146,9 +142,11 @@ int main() {
                 v_set.push_back(i);
             }
         }
+//        按照题目要求，如果没有任何一座城市被占领后需要花钱修路，则输出0
         if (v_set.size() == 0) {
             cout << "0";
         } else {
+//            升序输出
             sort(v_set.begin(), v_set.end());
             bool f = 0;
             for (int x: v_set) {
