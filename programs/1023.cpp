@@ -28,7 +28,7 @@ double get_angle(const Point2D &p1, const Point2D &p2) {
 }
 
 double area(const Point2D &p1, const Point2D &p2, const Point2D &p3) {
-    return fabs((p3.posx - p1.posx) * (p2.posy - p1.posy) - (p3.posy - p1.posy) * (p2.posx - p1.posx));
+    return fabs((p3.posx - p1.posx) * (p2.posy - p1.posy) - (p3.posy - p1.posy) * (p2.posx - p1.posx)) / 2;
 }
 
 double area(int a, int b, int c) {

@@ -1,4 +1,4 @@
-# PAT顶级解题目录
+# PAT Top-level Exercises (PATTE)
 - 作者：Depressant
 - 编程语言：C++
 
