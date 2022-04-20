@@ -3,4 +3,4 @@ project(Exercises)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Exercises programs/1002.cpp)
+add_executable(Exercises programs/1028.cpp)
