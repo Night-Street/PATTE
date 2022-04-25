@@ -54,44 +54,45 @@ void read() {
     }
 }
 
+int prv[maxn];
+bool reachable[maxn] = {false}, alongside[maxn] = {false};
 
-bool check_in[maxn] = {false};
+void trace_back(int cur) {
+    while (cur != prv[cur]) {
+        alongside[cur] = true;
+        cur = prv[cur];
+    }
+}
 
-
-bool f = true;
 
 void dfs(int cur) {
     static bool vis[maxn] = {false};
     vis[cur] = true;
-    check_in[cur] = true;
+    reachable[cur] = true;
     if (cur == ed) {
         cnt++;
+        trace_back(ed);
     } else {
-        bool flag = false;
         for (int nxt: vgraph[cur]) {
             if (vis[nxt])
                 continue;
+            prv[nxt] = cur;
             dfs(nxt);
-            flag = true;
         }
-        if (!flag)
-            f = false;
     }
     vis[cur] = false;
 }
 
 void solve() {
-    check_in[st] = true;
+    prv[st] = st;
     dfs(st);
-//    针对case 6: ROM是孤立点
-    if (vgraph[name2id["ROM"]].empty())puts("No");
-//    针对case 2, 4, 7: 连通分量数大于1，且输出Yes
-    else if (!*std::min_element(check_in, check_in + N))puts("Yes");
-//    针对其它测试点
-    else if (!f)
-        puts("No");
-    else
-        puts("Yes");
+    bool f = true;
+    for (int i = 0; i < N; ++i) {
+        if (i == st)continue;
+        if (reachable[i] && !alongside[i])
+            f = false;
+    }
+    puts(f ? "Yes" : "No");
     std::cout << cnt;
 }
 
